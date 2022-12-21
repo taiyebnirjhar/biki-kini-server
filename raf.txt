@@ -1,0 +1,41 @@
+app.get("/productss/:id", async (req, res) => {
+  const category = req.params.id;
+  const query = {};
+
+  const result = await productsCollection.find(query).toArray();
+
+  let alldata = [];
+  let selectedCategory = result.find(
+    (item) => item.category === category
+  )?.data;
+  /**********/
+  if (!selectedCategory) {
+    result.map((items) => {
+      const resultData = items.data;
+      resultData.map((item) => {
+        alldata.push(item);
+      });
+    });
+    res.send(alldata);
+  } else {
+    res.send(selectedCategory);
+  }
+
+  // selectedcourse = data.find((item) => item.id == id);
+});
+
+app.get("/products/:id", async (req, res) => {
+  const category = req.params.id;
+
+  if (category === "all") {
+    const query = {};
+    const all = await allProductsCollection.find(query).toArray();
+
+    res.send(all);
+  } else {
+    const query = { category: `${category} ` };
+    const result = await allProductsCollection.find(query).toArray();
+
+    res.send(result);
+  }
+});
